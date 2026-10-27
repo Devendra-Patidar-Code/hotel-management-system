@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HotelPro – The Banyan House</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2f5;--ink:#14213d;--muted:#5b6678;--card:#fff;--line:#d5dde5;--accent:#e9a23b;--accent-ink:#3a2503;--ok:#1f7a5c;--bad:#b3362f;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1726;--ink:#e8edf5;--muted:#9aa7bd;--card:#172238;--line:#2a3752;--ok:#4cc29a;--bad:#f0877f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1726;--ink:#e8edf5;--muted:#9aa7bd;--card:#172238;--line:#2a3752;--ok:#4cc29a;--bad:#f0877f;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Figtree,system-ui,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque',Georgia,serif;margin:0;line-height:1.1}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
+.brand{font:800 1.3rem 'Bricolage Grotesque',serif;margin-right:auto}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+nav button{border-color:transparent;background:none}
+nav button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.danger{color:var(--bad)}
+.hero{padding:48px 0 28px}
+.hero h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:800;max-width:14ch}
+.hero p{color:var(--muted);max-width:46ch;margin:14px 0 26px}
+.search{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;align-items:end}
+label{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
+input,select{font:inherit;padding:9px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin:26px 0 60px}
+.room{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.room .top{height:96px;padding:14px;display:flex;align-items:flex-end;justify-content:space-between;color:#fff;font:800 2rem 'Bricolage Grotesque',serif}
+.room .top small{font:500 .85rem Figtree,sans-serif;opacity:.9}
+.room .body{padding:14px;display:grid;gap:8px;flex:1}
+.room .price{font:700 1.25rem 'Bricolage Grotesque',serif}
+.room .price span{font:400 .85rem Figtree;color:var(--muted)}
+.tags{color:var(--muted);font-size:.9rem}
+.room button{margin-top:auto}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin:26px 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:26px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.stat b{display:block;font:800 1.8rem 'Bricolage Grotesque',serif}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:500}
+.pill{padding:2px 9px;border-radius:99px;border:1px solid var(--line);font-size:.8rem}
+.pill.confirmed,.pill.checked-in{color:var(--ok);border-color:var(--ok)}
+.pill.cancelled,.pill.maintenance{color:var(--bad);border-color:var(--bad)}
+.empty{color:var(--muted);padding:30px 0}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);width:min(440px,92vw);padding:22px}
+dialog::backdrop{background:rgba(10,15,25,.55)}
+dialog .row{display:grid;gap:12px;margin:14px 0}
+dialog .actions{display:flex;gap:10px;justify-content:flex-end}
+.note{color:var(--muted);font-size:.85rem}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;z-index:99}
+@media(prefers-reduced-motion:no-preference){.toast{animation:in .25s ease}@keyframes in{from{opacity:0;transform:translate(-50%,8px)}}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand">HotelPro · The Banyan House</div>
+  <nav id="nav"></nav>
+</div></header>
+<main class="wrap" id="app"></main>
+
+<dialog id="loginDlg">
+  <h2>Log in</h2>
+  <div class="row">
+    <label>Email<input id="lEmail" type="email" autocomplete="email"></label>
+    <label>Password<input id="lPass" type="password" autocomplete="current-password"></label>
+    <p class="note">New email? An account is created for you as a guest. Admin demo: admin@hotelpro.com / admin123</p>
+  </div>
+  <div class="actions"><button onclick="loginDlg.close()">Cancel</button><button class="primary" onclick="doLogin()">Log in</button></div>
+</dialog>
+
+<dialog id="bookDlg">
+  <h2 id="bTitle">Book room</h2>
+  <div class="row" id="bBody"></div>
+  <div class="actions"><button onclick="bookDlg.close()">Cancel</button><button class="primary" onclick="confirmBooking()">Pay and confirm</button></div>
+</dialog>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iso=d=>d.toISOString().slice(0,10);
+const addDays=(s,n)=>{const d=new Date(s+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return iso(d)};
+const today=iso(new Date());
+const inr=n=>'₹'+n.toLocaleString('en-IN');
+const nights=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+
+const SEED_ROOMS=[
+ {id:101,type:'Standard',price:2800,cap:2,am:'Wi‑Fi, AC, garden view',c:'#2f5d62',status:'available'},
+ {id:102,type:'Standard',price:2800,cap:2,am:'Wi‑Fi, AC, courtyard view',c:'#3d6b5a',status:'available'},
+ {id:201,type:'Deluxe',price:4200,cap:3,am:'Wi‑Fi, AC, balcony, breakfast',c:'#274c77',status:'available'},
+ {id:202,type:'Deluxe',price:4200,cap:3,am:'Wi‑Fi, AC, balcony, breakfast',c:'#35507a',status:'available'},
+ {id:203,type:'Family',price:5600,cap:5,am:'Two beds, AC, kitchenette',c:'#6a4c93',status:'available'},
+ {id:301,type:'Suite',price:7900,cap:3,am:'Lounge, bathtub, city view',c:'#8c4a2f',status:'available'},
+ {id:302,type:'Suite',price:7900,cap:3,am:'Lounge, bathtub, pool view',c:'#9a5b2c',status:'available'},
+ {id:401,type:'Penthouse',price:14500,cap:4,am:'Private terrace, butler, dining',c:'#14213d',status:'available'}
+];
+let S={rooms:SEED_ROOMS,bookings:[],users:{'admin@hotelpro.com':{pw:'admin123',role:'admin',name:'Admin'}},user:null};
+try{const x=JSON.parse(localStorage.getItem('hotelpro')||'null');if(x&&x.rooms)S=x}catch(e){}
+const save=()=>{try{localStorage.setItem('hotelpro',JSON.stringify(S))}catch(e){}};
+let view='rooms',q={ci:today,co:addDays(today,1),g:2},pick=null;
+
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),2600)}
+function free(r,ci,co){return r.status!=='maintenance'&&!S.bookings.some(b=>b.room===r.id&&['confirmed','checked-in'].includes(b.status)&&b.ci<co&&b.co>ci)}
+const isAdmin=()=>S.user&&S.users[S.user]&&S.users[S.user].role==='admin';
+
+function renderNav(){
+ const tabs=[['rooms','Rooms']];
+ if(S.user)tabs.push(['mine','My bookings']);
+ if(isAdmin())tabs.push(['admin','Admin']);
+ $('#nav').innerHTML=tabs.map(([k,l])=>`<button data-v="${k}" ${view===k?'aria-current="true"':''}>${l}</button>`).join('')+
+  (S.user?`<button id="out">Log out (${esc(S.users[S.user].name)})</button>`:`<button id="in">Log in</button>`);
+ $('#nav').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{view=b.dataset.v;render()});
+ if($('#out'))$('#out').onclick=()=>{S.user=null;view='rooms';save();render();toast('Logged out')};
+ if($('#in'))$('#in').onclick=()=>loginDlg.showModal();
+}
+
+function roomsView(){
+ const n=nights(q.ci,q.co);
+ const list=S.rooms.filter(r=>r.cap>=q.g);
+ const cards=list.map(r=>{const ok=n>0&&free(r,q.ci,q.co);return `<article class="room">
+  <div class="top" style="background:${r.c}"><span>${r.id}</span><small>${r.type}</small></div>
+  <div class="body"><div class="price">${inr(r.price)} <span>per night</span></div>
+  <div class="tags">Sleeps ${r.cap} · ${esc(r.am)}</div>
+  ${ok?`<button class="primary" data-book="${r.id}">Book ${n} night${n>1?'s':''} · ${inr(r.price*n)}</button>`:`<button disabled>${r.status==='maintenance'?'Under maintenance':'Not available for these dates'}</button>`}
+  </div></article>`}).join('');
+ return `<section class="hero"><h1>Your room, confirmed in a minute.</h1><p>Pick your dates and see exactly which rooms are free. Pay at booking, or at the front desk.</p>
+ <div class="search">
+  <label>Check-in<input type="date" id="qci" min="${today}" value="${q.ci}"></label>
+  <label>Check-out<input type="date" id="qco" min="${addDays(q.ci,1)}" value="${q.co}"></label>
+  <label>Guests<select id="qg">${[1,2,3,4,5].map(i=>`<option ${i===q.g?'selected':''}>${i}</option>`).join('')}</select></label>
+ </div></section>
+ ${n<=0?'<p class="empty">Check-out must be after check-in.</p>':''}
+ <div class="grid">${cards||'<p class="empty">No rooms fit that many guests.</p>'}</div>`;
+}
+
+function mineView(){
+ const mine=S.bookings.filter(b=>b.user===S.user).sort((a,b)=>b.id-a.id);
+ if(!mine.length)return `<p class="empty">No bookings yet. Pick a room on the Rooms tab.</p>`;
+ return `<div class="panel scroll"><table><tr><th>Ref</th><th>Room</th><th>Dates</th><th>Total</th><th>Payment</th><th>Status</th><th></th></tr>`+
+ mine.map(b=>`<tr><td>#${b.id}</td><td>${b.room}</td><td>${b.ci} to ${b.co}</td><td>${inr(b.total)}</td><td>${esc(b.pay)}</td><td><span class="pill ${b.status}">${b.status}</span></td>
+ <td>${b.status==='confirmed'?`<button class="danger" data-cancel="${b.id}">Cancel</button>`:''}</td></tr>`).join('')+`</table></div>`;
+}
+
+function adminView(){
+ const act=S.bookings.filter(b=>b.status==='checked-in').length;
+ const rev=S.bookings.filter(b=>b.status!=='cancelled').reduce((s,b)=>s+b.total,0);
+ const occ=Math.round(100*S.rooms.filter(r=>S.bookings.some(b=>b.room===r.id&&b.status==='checked-in')).length/S.rooms.length);
+ const rows=[...S.bookings].sort((a,b)=>b.id-a.id).map(b=>`<tr><td>#${b.id}</td><td>${esc(b.name)}<br><span class="note">${esc(b.user)}</span></td><td>${b.room}</td><td>${b.ci} to ${b.co}</td><td>${inr(b.total)}</td><td><span class="pill ${b.status}">${b.status}</span></td>
+ <td>${b.status==='confirmed'?`<button data-ci="${b.id}">Check in</button> <button class="danger" data-cancel="${b.id}">Cancel</button>`:b.status==='checked-in'?`<button data-co="${b.id}">Check out</button>`:''}</td></tr>`).join('');
+ return `<div class="stats"><div class="stat"><b>${S.bookings.length}</b>Total bookings</div><div class="stat"><b>${act}</b>Guests in house</div><div class="stat"><b>${occ}%</b>Occupancy now</div><div class="stat"><b>${inr(rev)}</b>Revenue booked</div></div>
+ <div class="panel scroll"><h2 style="font-size:1.3rem;margin-bottom:10px">Bookings</h2>${S.bookings.length?`<table><tr><th>Ref</th><th>Guest</th><th>Room</th><th>Dates</th><th>Total</th><th>Status</th><th></th></tr>${rows}</table>`:'<p class="empty">No bookings yet.</p>'}</div>
+ <div class="panel scroll"><h2 style="font-size:1.3rem;margin-bottom:10px">Rooms</h2><table><tr><th>Room</th><th>Type</th><th>Rate</th><th>Status</th><th></th></tr>`+
+ S.rooms.map(r=>`<tr><td>${r.id}</td><td>${r.type}</td><td>${inr(r.price)}</td><td><span class="pill ${r.status}">${r.status}</span></td><td><button data-maint="${r.id}">${r.status==='maintenance'?'Mark available':'Mark maintenance'}</button></td></tr>`).join('')+`</table></div>`;
+}
+
+function render(){
+ renderNav();
+ $('#app').innerHTML=view==='mine'&&S.user?mineView():view==='admin'&&isAdmin()?adminView():roomsView();
+ const app=$('#app');
+ if($('#qci')){
+  $('#qci').onchange=e=>{q.ci=e.target.value;if(q.co<=q.ci)q.co=addDays(q.ci,1);render()};
+  $('#qco').onchange=e=>{q.co=e.target.value;render()};
+  $('#qg').onchange=e=>{q.g=+e.target.value;render()};
+ }
+ app.querySelectorAll('[data-book]').forEach(b=>b.onclick=()=>openBook(+b.dataset.book));
+ app.querySelectorAll('[data-cancel]').forEach(b=>b.onclick=()=>setStatus(+b.dataset.cancel,'cancelled','Booking cancelled'));
+ app.querySelectorAll('[data-ci]').forEach(b=>b.onclick=()=>setStatus(+b.dataset.ci,'checked-in','Guest checked in'));
+ app.querySelectorAll('[data-co]').forEach(b=>b.onclick=()=>setStatus(+b.dataset.co,'checked-out','Guest checked out'));
+ app.querySelectorAll('[data-maint]').forEach(b=>b.onclick=()=>{const r=S.rooms.find(x=>x.id===+b.dataset.maint);r.status=r.status==='maintenance'?'available':'maintenance';save();render()});
+}
+function setStatus(id,st,msg){const b=S.bookings.find(x=>x.id===id);if(b){b.status=st;save();render();toast(msg)}}
+
+function doLogin(){
+ const e=$('#lEmail').value.trim().toLowerCase(),p=$('#lPass').value;
+ if(!/^\S+@\S+\.\S+$/.test(e)||p.length<4){toast('Enter a valid email and a password of 4+ characters');return}
+ if(S.users[e]){if(S.users[e].pw!==p){toast('Wrong password');return}}
+ else S.users[e]={pw:p,role:'guest',name:e.split('@')[0]};
+ S.user=e;save();loginDlg.close();$('#lPass').value='';render();toast('Welcome, '+S.users[e].name);
+}
+
+function openBook(id){
+ if(!S.user){loginDlg.showModal();toast('Log in to book a room');return}
+ pick=S.rooms.find(r=>r.id===id);const n=nights(q.ci,q.co);
+ $('#bTitle').textContent=`${pick.type} · Room ${pick.id}`;
+ $('#bBody').innerHTML=`<div>${q.ci} to ${q.co} · ${n} night${n>1?'s':''} · ${q.g} guest${q.g>1?'s':''}</div>
+ <label>Guest name<input id="bName" value="${esc(S.users[S.user].name)}"></label>
+ <label>Payment method<select id="bPay"><option>UPI</option><option>Card</option><option>Pay at hotel</option></select></label>
+ <div class="price" style="font:800 1.5rem 'Bricolage Grotesque',serif">Total ${inr(pick.price*n)}</div>`;
+ bookDlg.showModal();
+}
+function confirmBooking(){
+ const name=$('#bName').value.trim();
+ if(!name){toast('Enter the guest name');return}
+ if(!free(pick,q.ci,q.co)){toast('Sorry, that room was just taken');bookDlg.close();render();return}
+ const id=(S.bookings.reduce((m,b)=>Math.max(m,b.id),1000))+1;
+ S.bookings.push({id,room:pick.id,user:S.user,name,ci:q.ci,co:q.co,guests:q.g,total:pick.price*nights(q.ci,q.co),pay:$('#bPay').value,status:'confirmed'});
+ save();bookDlg.close();view='mine';render();toast('Booking #'+id+' confirmed');
+}
+const loginDlg=$('#loginDlg'),bookDlg=$('#bookDlg');
+render();
+</script>
+</body>
+</html>
